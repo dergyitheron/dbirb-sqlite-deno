@@ -1,11 +1,8 @@
 FROM hayd/deno:1.0.0
 
-EXPOSE 8162
+EXPOSE 4321
 
 WORKDIR /app
-
-# Prefer not to run as root.
-USER root
 
 # Cache the dependencies as a layer (this is re-run only when deps.ts is modified).
 # Ideally this will download and compile _all_ external files used in main.ts.
@@ -16,6 +13,11 @@ RUN deno cache deps.ts
 ADD . /app
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
 RUN deno cache main.ts
+
+#prepare volume for db
+RUN mkdir db
+VOLUME /app/db
+
 
 # These are passed as deno arguments when run with docker:
 CMD ["run", "--allow-all", "main.ts"]
